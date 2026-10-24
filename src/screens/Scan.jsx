@@ -10,6 +10,7 @@ export default function Scan({ health, onBack, onStart }) {
   const [doc, setDoc] = useState(null)
   const [lesson, setLesson] = useState({ status: 'idle' }) // idle | loading | ready | error
   const [error, setError] = useState('')
+  const [isSample, setIsSample] = useState(false)
   const fileRef = useRef(null)
   const runId = useRef(0)
   const local = health?.backend === 'ollama'
@@ -18,6 +19,7 @@ export default function Scan({ health, onBack, onStart }) {
     const id = ++runId.current
     const opts = { demo, language: 'English' }
     setPreview(image.dataUrl)
+    setIsSample(demo === 'sample-label')
     setError('')
     setDoc(null)
     setLesson({ status: 'idle' })
@@ -83,7 +85,7 @@ export default function Scan({ health, onBack, onStart }) {
             </p>
             <input ref={fileRef} type="file" accept="image/*" hidden onChange={onFile} />
             <button className="primary wide" onClick={() => fileRef.current?.click()}>Choose a photo</button>
-            <button className="secondary wide" onClick={() => process(makeSampleLabel(), true)}>Try a sample label</button>
+            <button className="secondary wide" onClick={() => process(makeSampleLabel(), 'sample-label')}>Try a sample label</button>
           </>
         )}
 
@@ -98,6 +100,7 @@ export default function Scan({ health, onBack, onStart }) {
           <>
             <h2 className="prompt">Here's what I found</h2>
             <p className="notice">{doc.documentType}. {doc.summary}</p>
+            {isSample && <p className="notice">Sample label: this is a saved Gemma 4 response so the demo is instant. Your own photos are read live.</p>}
             <ul className="terms" aria-label="Key terms">
               {doc.terms.map((t) => (
                 <li key={t.term}>

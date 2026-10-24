@@ -9,7 +9,7 @@ const PORT = Number(process.env.PORT || 8787)
 const MAX_BODY = 8 * 1024 * 1024
 const LANGUAGES = ['English', 'Spanish', 'Arabic']
 const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
-const CACHE_DIR = new URL('./cache/', import.meta.url)
+const DEMO_FILE = new URL('./demo/sample-label.json', import.meta.url)
 
 const language = (v) => (LANGUAGES.includes(v) ? v : 'English')
 
@@ -37,13 +37,18 @@ function readJson(req) {
   })
 }
 
-// Only the built-in sample label is ever cached, so a demo can replay offline.
-// Real photos and anything derived from them are never written to disk.
-const cacheFile = (key) => new URL(`${key}.json`, CACHE_DIR)
-const cacheGet = (key) => { try { return JSON.parse(fs.readFileSync(cacheFile(key), 'utf8')) } catch { return null } }
-const cachePut = (key, value) => { try { fs.mkdirSync(CACHE_DIR, { recursive: true }); fs.writeFileSync(cacheFile(key), JSON.stringify(value)) } catch { /* cache is optional */ } }
-const PROMPT_VERSION = 2 // bump when prompts change so stale cached replies are not reused
-const cacheKey = (...parts) => crypto.createHash('sha256').update(JSON.stringify([PROMPT_VERSION, info(), ...parts])).digest('hex')
+// The built-in sample label is answered from a recorded Gemma 4 response (server/demo/sample-label.json),
+// so a demo is instant and works when the hosted API is slow. Real photos always go to the model, and
+// nothing derived from them is ever written to disk.
+const SAMPLE = 'sample-label'
+function recordedDemo(body, part) {
+  if (body.demo !== SAMPLE || language(body.language) !== 'English') return null
+  try {
+    return JSON.parse(fs.readFileSync(DEMO_FILE, 'utf8'))[part] ?? null
+  } catch {
+    return null
+  }
+}
 
 // Retries once when the reply is not usable JSON. API errors (which carry a status) are not retried.
 async function askJson(args, normalize) {
@@ -63,25 +68,26 @@ const routes = {
   'POST /api/extract': async (body) => {
     const image = body.image
     if (!image || !IMAGE_TYPES.includes(image.mimeType) || typeof image.data !== 'string') throw httpError(400, 'Please send a JPG, PNG or WebP image.')
+    const recorded = recordedDemo(body, 'extract')
+    if (recorded) return recorded
     const lang = language(body.language)
-    const key = body.demo ? cacheKey('extract', lang, image.data) : null
-    if (key) { const hit = cacheGet(key); if (hit) return hit }
     const result = await askJson({ task: 'extract', system: SYSTEM, text: extractPrompt(lang), image, maxTokens: 900 }, normalizeExtract)
     if (result.error) throw httpError(422, "That doesn't look like a medication label or health document. Try another photo.")
-    if (key) cachePut(key, result)
     return result
   },
 
   'POST /api/lesson': async (body) => {
     const terms = Array.isArray(body.terms) ? body.terms.slice(0, 6) : []
     if (!terms.length) throw httpError(400, 'No terms to build a lesson from.')
+    const recorded = recordedDemo(body, 'lesson')
+    if (recorded) return recorded
     const lang = language(body.language)
     const doc = { documentType: String(body.documentType ?? 'health document').slice(0, 80), terms }
-    const key = body.demo ? cacheKey('lesson', lang, doc) : null
-    if (key) { const hit = cacheGet(key); if (hit) return hit }
     const id = `scan-${crypto.randomBytes(3).toString('hex')}`
-    // Two parallel calls (about half the wait): each covers a share of the terms.
-    const groups = terms.length > 3 ? [terms.slice(0, 3), terms.slice(3)] : [terms]
+    // One call by default. LESSON_PARALLEL=1 splits it in two to cut the wait, but hosted Gemma
+    // returned more 500s with concurrent requests when this was tested.
+    const split = process.env.LESSON_PARALLEL === '1' && terms.length > 3
+    const groups = split ? [terms.slice(0, 3), terms.slice(3)] : [terms]
     const parts = await Promise.all(
       groups.map((g, i) =>
         askJson(
@@ -96,9 +102,7 @@ const routes = {
       concepts: Object.assign({}, ...parts.map((p) => p.concepts)),
       questions: parts.flatMap((p) => p.questions).slice(0, 5),
     }
-    const result = { topic }
-    if (key) cachePut(key, result)
-    return result
+    return { topic }
   },
 
   'POST /api/review': async (body) => {

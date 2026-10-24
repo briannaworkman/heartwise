@@ -1,0 +1,125 @@
+{
+  "extract": {
+    "documentType": "Prescription bottle label",
+    "summary": "This is a label from a pharmacy that tells the patient how to take their medicine.",
+    "terms": [
+      {
+        "term": "Twice daily",
+        "plain": "Take the medicine two times every day."
+      },
+      {
+        "term": "Qty: 60",
+        "plain": "There are 60 tablets in the bottle."
+      },
+      {
+        "term": "Refills: 2",
+        "plain": "You can get this medicine from the pharmacy 2 more times."
+      },
+      {
+        "term": "Discard after",
+        "plain": "Throw the medicine away after this date because it may not work."
+      },
+      {
+        "term": "Contraindicated",
+        "plain": "This medicine should not be used because it could be harmful."
+      }
+    ]
+  },
+  "lesson": {
+    "topic": {
+      "id": "scan-f8f8de",
+      "title": "Reading Your Label",
+      "blurb": "Let's learn how to understand the information on your medicine bottle.",
+      "generated": true,
+      "concepts": {
+        "frequency": {
+          "name": "How Often",
+          "review": "The label tells you how many times a day to take the medicine. This helps you stay on track with your care."
+        },
+        "quantity": {
+          "name": "Amount",
+          "review": "The quantity (Qty) is the total number of pills in the bottle. This helps you know when you might run low."
+        },
+        "refills": {
+          "name": "Getting More",
+          "review": "Refills are the number of times you can get more of the medicine from the pharmacy. Your care team decides how many refills you get."
+        },
+        "expiration": {
+          "name": "Safety Dates",
+          "review": "The 'discard after' date tells you when to throw the medicine away. Medicine may not work well after this date."
+        },
+        "safety": {
+          "name": "Safety Warnings",
+          "review": "If a medicine is 'contraindicated,' it means it should not be used. This is because it could be harmful to the patient."
+        }
+      },
+      "questions": [
+        {
+          "id": "scan-f8f8dea-1",
+          "concept": "frequency",
+          "prompt": "If a label says 'Twice daily,' what does that mean?",
+          "options": [
+            "Take the medicine every two days.",
+            "Take the medicine two times every day.",
+            "Take the medicine only two times total.",
+            "Take the medicine twice a week."
+          ],
+          "answer": 1,
+          "explain": "Twice daily means the medicine is taken two times each day."
+        },
+        {
+          "id": "scan-f8f8dea-2",
+          "concept": "quantity",
+          "prompt": "You see 'Qty: 60' on a bottle. What is this telling you?",
+          "options": [
+            "Take 60 pills at once.",
+            "There are 60 tablets in the bottle.",
+            "The medicine lasts for 60 days.",
+            "You can refill the bottle 60 times."
+          ],
+          "answer": 1,
+          "explain": "The Qty or quantity tells you how many tablets are inside the bottle."
+        },
+        {
+          "id": "scan-f8f8dea-3",
+          "concept": "refills",
+          "prompt": "What does 'Refills: 2' mean on a prescription label?",
+          "options": [
+            "You should refill the bottle every 2 days.",
+            "The bottle contains 2 pills.",
+            "You must take the medicine 2 times.",
+            "You can get this medicine from the pharmacy 2 more times."
+          ],
+          "answer": 3,
+          "explain": "Refills tell you how many more times the pharmacy can give you the medicine."
+        },
+        {
+          "id": "scan-f8f8dea-4",
+          "concept": "expiration",
+          "prompt": "Why should you follow the 'Discard after' date on a label?",
+          "options": [
+            "To change how often the medicine is taken.",
+            "Because the medicine may not work after that date.",
+            "Because the pharmacy will stop refills.",
+            "To make room for new medicine."
+          ],
+          "answer": 1,
+          "explain": "It is important to throw medicine away after this date because it may no longer work."
+        },
+        {
+          "id": "scan-f8f8dea-5",
+          "concept": "safety",
+          "prompt": "If a medicine is 'Contraindicated,' what does that mean?",
+          "options": [
+            "The medicine should be taken with food.",
+            "The medicine is free of charge.",
+            "The medicine is very strong.",
+            "The medicine should not be used because it could be harmful."
+          ],
+          "answer": 3,
+          "explain": "Contraindicated is a word used to say a medicine should not be used because it could be harmful."
+        }
+      ]
+    }
+  }
+}

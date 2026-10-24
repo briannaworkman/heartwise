@@ -8,6 +8,7 @@ export function httpError(status, message) {
 
 const BACKEND = process.env.MODEL_BACKEND || 'gemini'
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemma-4-31b-it'
+const GEMINI_FALLBACK_MODEL = process.env.GEMINI_FALLBACK_MODEL || 'gemma-4-26b-a4b-it'
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'gemma4:e4b'
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://127.0.0.1:11434'
 const TIMEOUT_MS = 90_000
@@ -28,7 +29,7 @@ export async function generate({ task, system, text, image, maxTokens = 1400 }) 
 async function gemini({ system, text, image, maxTokens }) {
   const key = process.env.GEMINI_API_KEY
   if (!key) throw httpError(500, 'GEMINI_API_KEY is not set on the server.')
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`
+  const urlFor = (model) => `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`
   const parts = []
   if (image) parts.push({ inline_data: { mime_type: image.mimeType, data: image.data } }) // image before text
   parts.push({ text })
@@ -37,8 +38,8 @@ async function gemini({ system, text, image, maxTokens }) {
     systemInstruction: { parts: [{ text: system }] },
     generationConfig: { temperature: 1.0, topP: 0.95, topK: 64, maxOutputTokens: maxTokens },
   }
-  const call = (b) =>
-    fetch(url, {
+  const call = (model, b) =>
+    fetch(urlFor(model), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
       body: JSON.stringify(b),
@@ -47,13 +48,19 @@ async function gemini({ system, text, image, maxTokens }) {
 
   // Ask for minimal thinking to keep replies fast; retry without it if the API rejects the field.
   const fast = { ...body, generationConfig: { ...body.generationConfig, thinkingConfig: { thinkingLevel: 'minimal' } } }
-  let res = await call(fast)
-  if (res.status === 400) res = await call(body)
-  // Hosted Gemma sometimes answers 500/503/429 under load. Back off and try again.
-  for (const waitMs of [2000, 5000, 10000]) {
-    if (![429, 500, 503].includes(res.status)) break
-    await new Promise((r) => setTimeout(r, waitMs))
-    res = await call(fast)
+  // Hosted Gemma sometimes answers 500/503/429 under load. Back off and retry, then fall back to the
+  // second Gemma 4 model. Both go through the Gemini API.
+  let res
+  for (const model of [GEMINI_MODEL, GEMINI_FALLBACK_MODEL]) {
+    res = await call(model, fast).catch((err) => (err.name === 'TimeoutError' ? { ok: false, status: 504, text: async () => 'timed out' } : Promise.reject(err)))
+    if (res.status === 400) res = await call(model, body)
+    for (const waitMs of [1500, 4000]) {
+      if (![429, 500, 503, 504].includes(res.status)) break
+      await new Promise((r) => setTimeout(r, waitMs))
+      res = await call(model, fast).catch((err) => (err.name === 'TimeoutError' ? { ok: false, status: 504, text: async () => 'timed out' } : Promise.reject(err)))
+    }
+    if (res.ok) break
+    console.error(`[model] ${model} failed with ${res.status}${model === GEMINI_MODEL ? ', trying fallback' : ''}`)
   }
   if (!res.ok) {
     const detail = (await res.text()).slice(0, 300)
