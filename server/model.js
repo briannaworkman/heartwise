@@ -50,7 +50,7 @@ async function gemini({ system, text, image, maxTokens }) {
   let res = await call(fast)
   if (res.status === 400) res = await call(body)
   // Hosted Gemma sometimes answers 500/503/429 under load. Back off and try again.
-  for (const waitMs of [1500, 3000]) {
+  for (const waitMs of [2000, 5000, 10000]) {
     if (![429, 500, 503].includes(res.status)) break
     await new Promise((r) => setTimeout(r, waitMs))
     res = await call(fast)
