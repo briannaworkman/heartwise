@@ -49,6 +49,7 @@
 .secondary { background: var(--card); color: var(--primary-dark); border: 2px solid var(--line); box-shadow: 0 4px 0 var(--line); }
 .sheet.idle .primary { width: 100%; max-width: 520px; }
 
+.results .lesson-body { justify-content: center; }
 .score-row { display: flex; gap: 12px; }
 .score { padding: 8px 14px; border-radius: 12px; background: var(--card); border: 2px solid var(--line); font-weight: 700; }
 .score b { color: var(--primary-dark); }
