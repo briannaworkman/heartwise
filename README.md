@@ -17,6 +17,9 @@ Heartwise teaches understanding. It does not give medical advice.
 - **Ask Hugo:** type a question and Gemma answers in plain language from the app's lesson notes. If the notes
   do not cover it, it says so and points to a pharmacist or care team. Questions that sound like an emergency
   skip the model and show a fixed message to call 911 or 988.
+- **Find care nearby:** a Nearby tab, plus a short section on each results screen, link out to official finders
+  (HRSA health centers, Healthcare.gov local help, MI Bridges, 211, Medicare Care Compare). Each finder asks for
+  your location itself, so Heartwise never sees or stores where you are.
 - **Hugo the mascot:** an animated pixel heart that reacts to right answers, mistakes and waiting.
 
 ## How Gemma 4 is used

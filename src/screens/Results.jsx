@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import Heartwise from '../components/Heartwise'
+import { courseIdFor, findersFor } from '../data/careFinders'
 import { reviewMissed } from '../lib/api'
 import { XP_PER_CORRECT } from '../lib/storage'
 
-export default function Results({ topic, answers, isPractice, onHome, onPractice }) {
+export default function Results({ topic, answers, isPractice, onHome, onPractice, onNearby }) {
+  const finders = findersFor(courseIdFor(topic.id))
   const correct = answers.filter((a) => a.correct).length
   const total = answers.length
   const missed = answers.filter((a) => !a.correct)
@@ -62,6 +64,18 @@ export default function Results({ topic, answers, isPractice, onHome, onPractice
             </ul>
           </section>
         )}
+
+        <section className="nearby" aria-labelledby="nearby-title">
+          <h3 id="nearby-title">Find help nearby</h3>
+          <ul>
+            {finders.map((f) => (
+              <li key={f.id}>
+                <a href={f.url} target="_blank" rel="noopener noreferrer"><strong>{f.title}</strong><span>{f.blurb}</span></a>
+              </li>
+            ))}
+          </ul>
+          <button className="nearby-more" onClick={onNearby}>See all places to get help</button>
+        </section>
       </main>
       <footer className="sheet idle stack">
         {missed.length > 0 && <button className="secondary" onClick={() => onPractice(missed.map((a) => a.id))}>Practice these again</button>}

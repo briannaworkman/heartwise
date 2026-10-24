@@ -57,7 +57,7 @@ function buildSteps(course, progress) {
   })
 }
 
-export default function Home({ progress, health, onStart, onScan, onAsk, onIntro }) {
+export default function Home({ progress, health, onStart, onScan, onAsk, onNearby, onIntro }) {
   const [guide, setGuide] = useState(false)
   const [courseId, setCourseId] = useState(loadCourseId)
   const course = courses.find((c) => c.id === courseId)
@@ -122,6 +122,7 @@ export default function Home({ progress, health, onStart, onScan, onAsk, onIntro
         <button className="tab active" aria-current="page"><Icon name="home" size={26} /><span>Learn</span></button>
         <button className="tab" onClick={onScan}><Icon name="camera" size={26} /><span>Scan</span></button>
         <button className="tab" onClick={onAsk}><Icon name="chat" size={26} /><span>Ask</span></button>
+        <button className="tab" onClick={onNearby}><Icon name="heart" size={26} /><span>Nearby</span></button>
       </nav>
     </div>
   )

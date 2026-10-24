@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Ask from './screens/Ask'
 import Home from './screens/Home'
+import Nearby from './screens/Nearby'
 import Lesson from './screens/Lesson'
 import Onboarding from './screens/Onboarding'
 import Results from './screens/Results'
@@ -46,10 +47,11 @@ export default function App() {
 
   if (screen === 'intro') return <Onboarding onDone={() => { markOnboarded(); setScreen('home') }} />
   if (screen === 'ask') return <Ask onBack={() => setScreen('home')} />
+  if (screen === 'nearby') return <Nearby onBack={() => setScreen('home')} />
   if (screen === 'scan') return <Scan health={health} onBack={() => setScreen('home')} onStart={(t) => start(t)} />
   if (screen === 'lesson') return <Lesson key={lessonKey} topic={topic} onExit={() => setScreen('home')} onFinish={finish} />
   if (screen === 'results') {
-    return <Results key={lessonKey} topic={topic.fullTopic ?? topic} answers={answers} isPractice={isPractice} onHome={() => setScreen('home')} onPractice={practiceMissed} />
+    return <Results key={lessonKey} topic={topic.fullTopic ?? topic} answers={answers} isPractice={isPractice} onHome={() => setScreen('home')} onPractice={practiceMissed} onNearby={() => setScreen('nearby')} />
   }
-  return <Home progress={progress} health={health} onStart={(t) => start(t)} onScan={() => setScreen('scan')} onAsk={() => setScreen('ask')} onIntro={() => setScreen('intro')} />
+  return <Home progress={progress} health={health} onStart={(t) => start(t)} onScan={() => setScreen('scan')} onAsk={() => setScreen('ask')} onNearby={() => setScreen('nearby')} onIntro={() => setScreen('intro')} />
 }
