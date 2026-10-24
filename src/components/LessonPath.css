@@ -12,8 +12,13 @@
 .lp-node:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--edge); }
 .lp-node.done { --face: #ffc800; --edge: #e0a500; }
 .lp-node.locked { --face: #e7e0da; --edge: #cfc6bf; --glyph: #aea49c; }
-.lp-node.current { box-shadow: 0 8px 0 var(--edge), 0 0 0 7px var(--bg), 0 0 0 13px #e5ddd6; }
-.lp-node.current:active { box-shadow: 0 3px 0 var(--edge), 0 0 0 7px var(--bg), 0 0 0 13px #e5ddd6; }
+/* Ring is centered on the face plus its 8px raised edge, and stays put while the button is pressed. */
+.lp-node.current { position: relative; }
+.lp-node.current::before {
+  content: ''; position: absolute; left: -13px; top: -11px; width: 98px; height: 98px; box-sizing: border-box;
+  border: 6px solid #e5ddd6; border-radius: 50%; pointer-events: none;
+}
+.lp-node.current:active::before { transform: translateY(-5px); }
 .lp-node.trophy.locked { --glyph: #b9afa7; }
 
 .lp-start {
