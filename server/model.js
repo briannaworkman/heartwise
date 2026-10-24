@@ -28,7 +28,7 @@ export async function generate({ task, system, text, image, maxTokens = 1400 }) 
 
 async function gemini({ system, text, image, maxTokens }) {
   const key = process.env.GEMINI_API_KEY
-  if (!key) throw httpError(500, 'GEMINI_API_KEY is not set on the server.')
+  if (!key) throw httpError(503, 'Live AI is switched off here (no API key is set). Try the sample label or a suggested question.')
   const urlFor = (model) => `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`
   const parts = []
   if (image) parts.push({ inline_data: { mime_type: image.mimeType, data: image.data } }) // image before text

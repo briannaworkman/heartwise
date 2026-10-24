@@ -1,6 +1,7 @@
 import http from 'node:http'
 import crypto from 'node:crypto'
 import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { generate, httpError, info } from './model.js'
 import { SYSTEM, askPrompt, extractPrompt, lessonPrompt, reviewPrompt } from './prompts.js'
 import { parseJson, normalizeAnswer, normalizeExtract, normalizeLesson, normalizeReview } from './lesson.js'
@@ -26,6 +27,8 @@ const DEMO_FILE = new URL('./demo/sample-label.json', import.meta.url)
 const language = (v) => (LANGUAGES.includes(v) ? v : 'English')
 
 function readJson(req) {
+  // Vercel parses JSON bodies before the function runs, so the stream is already consumed.
+  if (req.body !== undefined) return Promise.resolve(typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body ?? {})
   return new Promise((resolve, reject) => {
     const chunks = []
     let size = 0
@@ -138,8 +141,8 @@ const routes = {
   },
 }
 
-http
-  .createServer(async (req, res) => {
+// Used by the local server below and by the Vercel function in api/.
+export async function handle(req, res) {
     const send = (status, payload) => {
       res.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' })
       res.end(JSON.stringify(payload))
@@ -153,8 +156,11 @@ http
       console.error(`[${req.url}]`, err.status ?? 500, err.message)
       send(err.status ?? 500, { error: err.status ? err.message : 'Something went wrong on the server.' })
     }
-  })
-  .listen(PORT, '127.0.0.1', () => {
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  http.createServer(handle).listen(PORT, '127.0.0.1', () => {
     const i = info()
     console.log(`Heartwise server on http://127.0.0.1:${PORT}  backend=${i.backend} model=${i.model} key=${i.hasKey ? 'set' : 'MISSING'}`)
   })
+}
