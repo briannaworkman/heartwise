@@ -42,7 +42,8 @@ function readJson(req) {
 const cacheFile = (key) => new URL(`${key}.json`, CACHE_DIR)
 const cacheGet = (key) => { try { return JSON.parse(fs.readFileSync(cacheFile(key), 'utf8')) } catch { return null } }
 const cachePut = (key, value) => { try { fs.mkdirSync(CACHE_DIR, { recursive: true }); fs.writeFileSync(cacheFile(key), JSON.stringify(value)) } catch { /* cache is optional */ } }
-const cacheKey = (...parts) => crypto.createHash('sha256').update(JSON.stringify([info(), ...parts])).digest('hex')
+const PROMPT_VERSION = 2 // bump when prompts change so stale cached replies are not reused
+const cacheKey = (...parts) => crypto.createHash('sha256').update(JSON.stringify([PROMPT_VERSION, info(), ...parts])).digest('hex')
 
 // Retries once when the reply is not usable JSON. API errors (which carry a status) are not retried.
 async function askJson(args, normalize) {
@@ -79,7 +80,22 @@ const routes = {
     const key = body.demo ? cacheKey('lesson', lang, doc) : null
     if (key) { const hit = cacheGet(key); if (hit) return hit }
     const id = `scan-${crypto.randomBytes(3).toString('hex')}`
-    const topic = await askJson({ task: 'lesson', system: SYSTEM, text: lessonPrompt(doc, lang), maxTokens: 1800 }, (raw) => normalizeLesson(raw, id))
+    // Two parallel calls (about half the wait): each covers a share of the terms.
+    const groups = terms.length > 3 ? [terms.slice(0, 3), terms.slice(3)] : [terms]
+    const parts = await Promise.all(
+      groups.map((g, i) =>
+        askJson(
+          { task: 'lesson', system: SYSTEM, text: lessonPrompt({ ...doc, terms: g }, lang, Math.max(g.length, 2)), maxTokens: 1200 },
+          (raw) => normalizeLesson(raw, `${id}${'ab'[i]}`, 2),
+        ),
+      ),
+    )
+    const topic = {
+      ...parts[0],
+      id,
+      concepts: Object.assign({}, ...parts.map((p) => p.concepts)),
+      questions: parts.flatMap((p) => p.questions).slice(0, 5),
+    }
     const result = { topic }
     if (key) cachePut(key, result)
     return result

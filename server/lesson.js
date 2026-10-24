@@ -28,7 +28,7 @@ export function normalizeExtract(raw) {
 }
 
 // Validates the model's lesson and shuffles options so the right answer is not always first.
-export function normalizeLesson(raw, id) {
+export function normalizeLesson(raw, id, min = 3) {
   const concepts = {}
   for (const [k, v] of Object.entries(raw.concepts ?? {})) {
     const key = slug(k)
@@ -52,7 +52,7 @@ export function normalizeLesson(raw, id) {
       explain: str(q.explain, 300),
     })
   }
-  if (questions.length < 3) throw new Error('The lesson came back incomplete')
+  if (questions.length < min) throw new Error('The lesson came back incomplete')
   return {
     id,
     title: str(raw.title, 80) || 'Your lesson',

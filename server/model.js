@@ -46,8 +46,15 @@ async function gemini({ system, text, image, maxTokens }) {
     })
 
   // Ask for minimal thinking to keep replies fast; retry without it if the API rejects the field.
-  let res = await call({ ...body, generationConfig: { ...body.generationConfig, thinkingConfig: { thinkingLevel: 'minimal' } } })
+  const fast = { ...body, generationConfig: { ...body.generationConfig, thinkingConfig: { thinkingLevel: 'minimal' } } }
+  let res = await call(fast)
   if (res.status === 400) res = await call(body)
+  // Hosted Gemma sometimes answers 500/503/429 under load. Back off and try again.
+  for (const waitMs of [1500, 3000]) {
+    if (![429, 500, 503].includes(res.status)) break
+    await new Promise((r) => setTimeout(r, waitMs))
+    res = await call(fast)
+  }
   if (!res.ok) {
     const detail = (await res.text()).slice(0, 300)
     throw httpError(502, `Gemini API error ${res.status}: ${detail}`)

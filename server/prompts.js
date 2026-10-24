@@ -11,13 +11,13 @@ Otherwise reply with this JSON:
 {"documentType":"short label such as 'Prescription bottle label'","summary":"one friendly sentence about what this document is, with no personal details","terms":[{"term":"word or phrase as printed","plain":"what it means, in one short plain sentence"}]}
 Include 4 to 6 terms a patient would most likely find confusing or important. Write in ${language}.`
 
-export const lessonPrompt = ({ documentType, terms }, language) => `A learner just scanned a ${documentType}. The key terms found were:
+export const lessonPrompt = ({ documentType, terms }, language, count = 5) => `A learner just scanned a ${documentType}. The key terms found were:
 ${JSON.stringify(terms)}
-Write a 5 question multiple-choice mini lesson that teaches ONLY these terms and general-purpose skills for reading this kind of document.
+Write a ${count} question multiple-choice mini lesson that teaches ONLY these terms and general-purpose skills for reading this kind of document.
 Rules:
 - Each question has exactly 4 options and exactly one correct answer. Wrong options are plausible but clearly wrong.
 - Use only the meanings given above. No medical advice and no dosing guidance.
-- Each explanation is 1 or 2 warm, reassuring sentences.
+- Each explanation is 1 or 2 warm, reassuring sentences. It is shown after the learner answers, whether they were right or wrong, so NEVER say "correct", "right", "wrong" or "you got it". Just explain the idea.
 - Concept keys are short lowercase slugs, and every question's concept must be a key in "concepts".
 JSON shape:
 {"title":"short lesson title","blurb":"one short sentence","concepts":{"concept-key":{"name":"short name","review":"2 or 3 plain sentences"}},"questions":[{"concept":"concept-key","prompt":"...","options":["...","...","...","..."],"answer":0,"explain":"..."}]}
