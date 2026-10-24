@@ -5,6 +5,17 @@ medication labels, care visits, and insurance costs. Built for Hack for Humanity
 
 Heartwise teaches understanding. It does not give medical advice.
 
+<p>
+  <img src="docs/screenshots/1-intro.jpg" width="150" alt="Hugo the pixel heart introduces Heartwise" />
+  <img src="docs/screenshots/2-home.jpg" width="150" alt="Course picker and lesson path" />
+  <img src="docs/screenshots/3-lesson.jpg" width="150" alt="A lesson question with feedback" />
+  <img src="docs/screenshots/4-scan.jpg" width="150" alt="Scanning a sample label: key terms in plain language" />
+  <img src="docs/screenshots/5-ask.jpg" width="150" alt="Ask Hugo answering a question" />
+  <img src="docs/screenshots/6-nearby.jpg" width="150" alt="Find care nearby" />
+</p>
+
+<sub>Screenshots use the built-in fictional sample label and saved Gemma 4 responses.</sub>
+
 ## What it does
 
 - **Three courses, each with its own path:** Medications, Care visits (teach-back, checkups and screenings,
