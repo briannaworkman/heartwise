@@ -72,3 +72,9 @@ export function normalizeReview(raw) {
   if (!Object.keys(notes).length) throw new Error('No notes in the reply')
   return { notes }
 }
+
+export function normalizeAnswer(raw) {
+  const answer = str(raw.answer, 900)
+  if (!answer) throw new Error('No answer in the reply')
+  return { answer }
+}

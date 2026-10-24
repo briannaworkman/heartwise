@@ -2,8 +2,20 @@ import http from 'node:http'
 import crypto from 'node:crypto'
 import fs from 'node:fs'
 import { generate, httpError, info } from './model.js'
-import { SYSTEM, extractPrompt, lessonPrompt, reviewPrompt } from './prompts.js'
-import { parseJson, normalizeExtract, normalizeLesson, normalizeReview } from './lesson.js'
+import { SYSTEM, askPrompt, extractPrompt, lessonPrompt, reviewPrompt } from './prompts.js'
+import { parseJson, normalizeAnswer, normalizeExtract, normalizeLesson, normalizeReview } from './lesson.js'
+import { topics } from '../src/data/topics.js'
+import { careTopics } from '../src/data/careVisits.js'
+import { costTopics } from '../src/data/insurance.js'
+
+// The only facts the "Ask Hugo" feature may use: the concept notes from every lesson.
+const REFERENCE = [...topics, ...careTopics, ...costTopics]
+  .flatMap((t) => Object.values(t.concepts).map((c) => `- ${c.name}: ${c.review}`))
+  .join('\n')
+
+// Questions that may describe an emergency never reach the model.
+const EMERGENCY = /\b(chest pain|can'?t breathe|cannot breathe|trouble breathing|overdos\w*|poison\w*|suicid\w*|kill myself|end my life|want to die|severe bleeding|unconscious|heart attack|having a stroke)\b/i
+const EMERGENCY_MESSAGE = 'This could be an emergency. Please call 911 right now, or go to the nearest emergency room. If you are thinking about harming yourself, call or text 988 (Suicide and Crisis Lifeline) to reach a person any time. Heartwise cannot help with emergencies.'
 
 const PORT = Number(process.env.PORT || 8787)
 const MAX_BODY = 8 * 1024 * 1024
@@ -103,6 +115,20 @@ const routes = {
       questions: parts.flatMap((p) => p.questions).slice(0, 5),
     }
     return { topic }
+  },
+
+  'POST /api/ask': async (body) => {
+    const question = typeof body.question === 'string' ? body.question.trim().slice(0, 300) : ''
+    if (question.length < 3) throw httpError(400, 'Type a question first.')
+    if (EMERGENCY.test(question)) return { answer: EMERGENCY_MESSAGE, emergency: true }
+    // Tapped suggestions are answered from recorded Gemma 4 replies (see record-ask.mjs).
+    if (body.demo === 'suggested') {
+      try {
+        const saved = JSON.parse(fs.readFileSync(new URL('./demo/ask.json', import.meta.url), 'utf8'))[question.toLowerCase()]
+        if (saved) return { answer: saved, recorded: true }
+      } catch { /* no recordings yet: fall through to the live model */ }
+    }
+    return askJson({ task: 'ask', system: SYSTEM, text: askPrompt({ question, reference: REFERENCE }, language(body.language)), maxTokens: 500 }, normalizeAnswer)
   },
 
   'POST /api/review': async (body) => {
