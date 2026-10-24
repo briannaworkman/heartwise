@@ -11,6 +11,11 @@ const PATHS = {
   bolt: 'M13 3L4 14h7l-1 7l9-11h-7l1-7z',
   home: ['M5 12H3l9-9l9 9h-2', 'M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7', 'M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6'],
   guide: ['M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z', 'M9 8h5', 'M9 12h5'],
+  heart: 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z',
+  calendar: ['M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z', 'M4 10h16', 'M8 3v4', 'M16 3v4'],
+  receipt: ['M6 3h12v18l-3-2l-3 2l-3-2l-3 2z', 'M9 8h6', 'M9 12h6'],
+  shield: 'M12 3l7 3v5c0 5-3.5 8-7 10c-3.5-2-7-5-7-10V6z',
+  clipboard: ['M9 4h6v3H9z', 'M7 5H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1', 'M9 12h6', 'M9 16h4'],
 }
 
 export default function Icon({ name, size = 24, stroke = 2.4 }) {

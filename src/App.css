@@ -75,3 +75,5 @@
 .terms li { display: grid; gap: 2px; padding: 12px 14px; background: var(--card); border: 2px solid var(--line); border-radius: 14px; font-size: 14px; line-height: 1.45; }
 .terms strong { font-size: 13px; letter-spacing: .3px; color: var(--brand); text-transform: uppercase; }
 .note.status { margin-top: 8px; }
+
+.source { max-width: 420px; margin-top: 4px; font-size: 12px; line-height: 1.45; color: var(--muted); }

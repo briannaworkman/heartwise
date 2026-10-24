@@ -5,6 +5,7 @@ export const topics = [
     id: 'label',
     title: 'Reading a medication label',
     blurb: 'Doses, timing and what the fine print means.',
+    source: 'Reference: MedlinePlus (NLM), openFDA drug labeling. Draft, not clinician-reviewed.',
     concepts: {
       frequency: { name: 'How often to take it', review: '"Twice daily" means two doses in one day, spaced out (often morning and evening). It does not mean two tablets at once. If the label is unclear, ask your pharmacist.' },
       ingredient: { name: 'Active ingredient', review: 'On over-the-counter medicines, the Drug Facts panel lists the active ingredient: the part that does the work. Checking it helps you avoid doubling up on the same ingredient in two products.' },
@@ -24,6 +25,7 @@ export const topics = [
     id: 'words',
     title: 'Common label and paperwork words',
     blurb: 'Decode the words that sound bigger than they are.',
+    source: 'Reference: MedlinePlus (NLM), openFDA drug labeling. Draft, not clinician-reviewed.',
     concepts: {
       'as-needed': { name: '"As needed"', review: '"As needed" means take it only when you have the symptom, and still follow the limits on the label, like the most you can take in a day.' },
       refill: { name: 'Refills', review: '"Refills: 2" means you can fill the same prescription two more times without getting a new one from your provider.' },
@@ -41,8 +43,9 @@ export const topics = [
   },
   {
     id: 'ask',
-    title: 'Questions to ask your care team',
-    blurb: 'Feel confident speaking up at appointments.',
+    title: 'Questions about your medicines',
+    blurb: 'Feel confident speaking up about what you take.',
+    source: 'Reference: MedlinePlus (NLM), AHRQ. Draft, not clinician-reviewed.',
     concepts: {
       'teach-back': { name: 'Teach-back', review: 'Teach-back means saying the plan in your own words and asking "Did I get that right?" It is a simple way to catch misunderstandings, and clinicians welcome it.' },
       purpose: { name: 'What it is for', review: 'For every new medicine, ask what it is for and how to take it. Knowing the purpose makes it easier to take it correctly.' },

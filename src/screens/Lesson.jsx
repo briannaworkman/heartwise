@@ -57,6 +57,7 @@ export default function Lesson({ topic, onExit, onFinish }) {
             )
           })}
         </div>
+        {topic.source && <p className="source">{topic.source}</p>}
       </main>
 
       {checked ? (
