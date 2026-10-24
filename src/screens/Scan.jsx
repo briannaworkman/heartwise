@@ -18,6 +18,8 @@ export default function Scan({ health, onBack, onStart }) {
   async function process(image, demo) {
     const id = ++runId.current
     const opts = { demo, language: 'English' }
+    // The saved sample answers instantly, so pace it like a real scan. Real photos need no pause.
+    const pause = (ms) => new Promise((r) => setTimeout(r, demo ? ms : 0))
     setPreview(image.dataUrl)
     setIsSample(demo === 'sample-label')
     setError('')
@@ -25,14 +27,14 @@ export default function Scan({ health, onBack, onStart }) {
     setLesson({ status: 'idle' })
     setPhase('reading')
     try {
-      const found = await extractDoc({ data: image.data, mimeType: image.mimeType }, opts)
+      const [found] = await Promise.all([extractDoc({ data: image.data, mimeType: image.mimeType }, opts), pause(3500)])
       if (id !== runId.current) return
       setDoc(found)
       setPhase('found')
       setLesson({ status: 'loading' })
       // Start building the lesson now. The learner reads what we found while it generates.
-      buildLesson(found, opts)
-        .then((r) => id === runId.current && setLesson({ status: 'ready', topic: r.topic }))
+      Promise.all([buildLesson(found, opts), pause(3000)])
+        .then(([r]) => id === runId.current && setLesson({ status: 'ready', topic: r.topic }))
         .catch((e) => id === runId.current && setLesson({ status: 'error', message: e.message }))
     } catch (e) {
       if (id !== runId.current) return
