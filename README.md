@@ -11,7 +11,6 @@ Heartwise teaches understanding. It does not give medical advice.
   <img src="docs/screenshots/3-lesson.jpg" width="150" alt="A lesson question with feedback" />
   <img src="docs/screenshots/4-scan.jpg" width="150" alt="Scanning a sample label: key terms in plain language" />
   <img src="docs/screenshots/5-ask.jpg" width="150" alt="Ask Hugo answering a question" />
-  <img src="docs/screenshots/6-nearby.jpg" width="150" alt="Find care nearby" />
 </p>
 
 <sub>Screenshots use the built-in fictional sample label and saved Gemma 4 responses.</sub>
