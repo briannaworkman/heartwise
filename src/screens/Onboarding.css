@@ -1,0 +1,17 @@
+.intro-top { display: flex; align-items: center; gap: 16px; min-height: 40px; }
+.intro-dots { flex: 1; display: flex; gap: 8px; }
+.intro-dots span { flex: 1; height: 10px; border-radius: 99px; background: #eee5df; transition: background .25s ease; }
+.intro-dots span.on { background: var(--primary); }
+.intro-skip { border: 0; background: none; padding: 8px 4px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: .4px; font-size: 14px; }
+
+.intro-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; animation: intro-in .3s ease-out; }
+.intro-title { font-size: 26px; line-height: 1.2; color: var(--ink); }
+.intro-text { max-width: 360px; font-size: 17px; line-height: 1.5; color: var(--muted); }
+.intro-points { width: 100%; max-width: 400px; list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 10px; text-align: left; }
+.intro-points li { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border: 2px solid var(--line); border-radius: 14px; background: var(--card); font-size: 15px; line-height: 1.4; }
+.intro-icon { flex: none; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 12px; background: #e6f6f3; color: var(--primary-dark); }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@keyframes intro-in { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .intro-body { animation: none; } .intro-dots span { transition: none; } }

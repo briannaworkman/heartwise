@@ -69,7 +69,7 @@ export default function Heartwise({ state = 'idle', nonce = 0, size = 220 }) {
   }, [state, nonce])
 
   return (
-    <svg ref={svgRef} className="hw" style={{ width: size }} viewBox="-30 -60 192 230" role="img" aria-label="Heartwise, a friendly pixel heart" data-state="idle" shapeRendering="crispEdges">
+    <svg ref={svgRef} className="hw" style={{ width: size }} viewBox="-30 -60 192 230" role="img" aria-label="Hugo, a friendly pixel heart" data-state="idle" shapeRendering="crispEdges">
       <ellipse className="hw-shadow" cx="66" cy="136" rx="40" ry="5" fill="#000" opacity=".12" />
       <g ref={confettiRef} />
       <g className="hw-jumper">

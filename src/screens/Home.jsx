@@ -47,7 +47,7 @@ function buildSteps(progress) {
   })
 }
 
-export default function Home({ progress, health, onStart, onScan }) {
+export default function Home({ progress, health, onStart, onScan, onIntro }) {
   const [guide, setGuide] = useState(false)
   const steps = buildSteps(progress)
   const act = (s) => (s.kind === 'scan' ? onScan() : s.kind === 'lesson' && onStart(s.topic))
@@ -76,6 +76,7 @@ export default function Home({ progress, health, onStart, onScan }) {
             <div className="unit-tip" role="note">
               <strong>Heartwise guide</strong>
               <p>Each step helps you read and understand health information. It isn't medical advice. Your pharmacist or care team has the final word.</p>
+              <button className="unit-tip-link" onClick={onIntro}>Replay the intro</button>
             </div>
           )}
         </section>

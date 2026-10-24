@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import Home from './screens/Home'
 import Lesson from './screens/Lesson'
+import Onboarding from './screens/Onboarding'
 import Results from './screens/Results'
 import Scan from './screens/Scan'
 import { getHealth } from './lib/api'
+import { hasOnboarded, markOnboarded } from './lib/onboarding'
 import { loadProgress, recordLesson } from './lib/storage'
 import './App.css'
 
 export default function App() {
-  const [screen, setScreen] = useState('home')
+  const [screen, setScreen] = useState(() => (hasOnboarded() ? 'home' : 'intro'))
   const [topic, setTopic] = useState(null)
   const [isPractice, setIsPractice] = useState(false)
   const [answers, setAnswers] = useState([])
@@ -41,10 +43,11 @@ export default function App() {
     start({ ...full, fullTopic: full, questions: full.questions.filter((q) => ids.includes(q.id)) }, true)
   }
 
+  if (screen === 'intro') return <Onboarding onDone={() => { markOnboarded(); setScreen('home') }} />
   if (screen === 'scan') return <Scan health={health} onBack={() => setScreen('home')} onStart={(t) => start(t)} />
   if (screen === 'lesson') return <Lesson key={lessonKey} topic={topic} onExit={() => setScreen('home')} onFinish={finish} />
   if (screen === 'results') {
     return <Results key={lessonKey} topic={topic.fullTopic ?? topic} answers={answers} isPractice={isPractice} onHome={() => setScreen('home')} onPractice={practiceMissed} />
   }
-  return <Home progress={progress} health={health} onStart={(t) => start(t)} onScan={() => setScreen('scan')} />
+  return <Home progress={progress} health={health} onStart={(t) => start(t)} onScan={() => setScreen('scan')} onIntro={() => setScreen('intro')} />
 }

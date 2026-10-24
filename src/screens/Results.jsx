@@ -48,7 +48,7 @@ export default function Results({ topic, answers, isPractice, onHome, onPractice
           <section className="study" aria-labelledby="study-title">
             <h3 id="study-title">Study this more</h3>
             <p className="study-sub">
-              {noteState === 'loading' && 'Heartwise is writing your notes…'}
+              {noteState === 'loading' && 'Hugo is writing your notes…'}
               {noteState === 'ready' && 'Personalized by Gemma from your answers. Check anything important with your care team.'}
               {(noteState === 'failed' || noteState === 'idle') && 'A little more on the ones that tripped you up. No pressure.'}
             </p>
