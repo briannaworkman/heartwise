@@ -7,8 +7,8 @@ export function httpError(status, message) {
 }
 
 const BACKEND = process.env.MODEL_BACKEND || 'gemini'
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemma-4-31b-it'
-const GEMINI_FALLBACK_MODEL = process.env.GEMINI_FALLBACK_MODEL || 'gemma-4-26b-a4b-it'
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemma-4-26b-a4b-it'
+const GEMINI_FALLBACK_MODEL = process.env.GEMINI_FALLBACK_MODEL || 'gemma-4-31b-it'
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'gemma4:e4b'
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://127.0.0.1:11434'
 const TIMEOUT_MS = 150_000 // hosted Gemma has taken over a minute per call at busy times

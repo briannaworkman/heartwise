@@ -26,8 +26,8 @@ Heartwise teaches understanding. It does not give medical advice.
 
 Open-weight Gemma 4 does the personalizing. Pre-written lessons hold the core facts.
 
-- **Hosted (default):** `gemma-4-31b-it` through the Gemini API, with automatic retries and a fallback to
-  `gemma-4-26b-a4b-it` when the API returns errors.
+- **Hosted (default):** `gemma-4-26b-a4b-it` through the Gemini API, with automatic retries and a fallback to
+  `gemma-4-31b-it` when the API returns errors.
 - **Local option:** Gemma 4 E4B through Ollama (`MODEL_BACKEND=ollama`).
 - A small Node server (`server/`) keeps the API key off the browser.
 
